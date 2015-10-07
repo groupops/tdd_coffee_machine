@@ -3,7 +3,12 @@ package com.epam.tdd_coffee_machine;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.math.BigDecimal;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class CoffeeMachineTest {
 
@@ -87,9 +92,52 @@ public class CoffeeMachineTest {
   public void shouldForwardMessageReceivedByCoffeeMachine(){
     String sampleMessageContent = "message-content";
     Message message = new Message(sampleMessageContent);
-    String messageContent = client.getMessage(message);
+    String messageContent = client.getMessage();
 
     assertEquals("M:message-content", messageContent);
+  }
+
+  @Test
+  public void shouldCreateCoffeeOrderWithEnoughMoneyTest(){
+    Order order = client.createOrder(Beverage.COFFEE);
+    BigDecimal coffeeCost = new BigDecimal("0.6");
+    BigDecimal money = new BigDecimal("0.6");
+    BigDecimal moneyFromClient = client.giveMoney(money);
+    order.setMoney(moneyFromClient);
+
+    assertEquals(coffeeCost, order.getMoney());
+  }
+
+  @Test
+  public void shouldCreateCoffeeOrderWithTooMuchMoneyTest(){
+    Order order = client.createOrder(Beverage.COFFEE);
+    BigDecimal money = new BigDecimal("0.7");
+    BigDecimal moneyFromClient = client.giveMoney(money);
+    order.setMoney(moneyFromClient);
+
+    assertThat(order.isEnoughMoneyFor(Beverage.COFFEE), is(equalTo(true)));
+  }
+
+  @Test
+  public void shouldNotCreateCoffeeOrderWithNotEnoughMoneyTest(){
+    Order order = client.createOrder(Beverage.COFFEE);
+    BigDecimal money = new BigDecimal("0.5");
+    BigDecimal moneyFromClient = client.giveMoney(money);
+    order.setMoney(moneyFromClient);
+
+    assertThat(order.isEnoughMoneyFor(Beverage.COFFEE), is(equalTo(false)));
+  }
+
+  @Test
+  public void shouldSendMessageWhenNotEnoughMoneyTest(){
+    String expectedMessage = "You have given not enough money for this drink";
+    Order order = client.createOrder(Beverage.COFFEE);
+    BigDecimal money = new BigDecimal("0.5");
+    BigDecimal moneyFromClient = client.giveMoney(money);
+    order.setMoney(moneyFromClient);
+    String messageContent = client.getMessage();
+
+    assertEquals(expectedMessage, messageContent);
   }
 
 }

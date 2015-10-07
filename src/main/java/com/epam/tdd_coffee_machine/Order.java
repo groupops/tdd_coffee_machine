@@ -1,8 +1,12 @@
 package com.epam.tdd_coffee_machine;
 
+import java.math.BigDecimal;
+
 public class Order {
 
   private String command;
+  private BigDecimal money;
+  private CoffeeMachineClient client;
 
   private void setCommand(String command) {
     this.command = command;
@@ -12,7 +16,32 @@ public class Order {
     return command;
   }
 
-  public void addBeverage(Beverage beverage){
+  public BigDecimal getMoney() {
+    return money;
+  }
+
+  public boolean isEnoughMoneyFor(Beverage beverage) {
+    boolean isEnoughMoney;
+    BigDecimal moneyFromClient = getMoney();
+    int result = moneyFromClient.compareTo(beverage.getPrice());
+
+    if (result >= 0) {
+      isEnoughMoney = true;
+    } else {
+      Message message =
+          new Message("You have given not enough money for this drink");
+      client.sendMessage(message);
+      isEnoughMoney = false;
+    }
+
+    return isEnoughMoney;
+  }
+
+  public void setMoney(BigDecimal money) {
+    this.money = money;
+  }
+
+  public void addBeverage(Beverage beverage) {
     String beverageSymbol = beverage.getSymbol();
 
     String command = new StringBuilder()
