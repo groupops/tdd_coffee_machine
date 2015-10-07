@@ -2,7 +2,6 @@ package com.epam.tdd_coffee_machine;
 
 public enum Sugar implements Ingredient {
 
-  NONE(""),
   ONE("1"),
   TWO("2");
 

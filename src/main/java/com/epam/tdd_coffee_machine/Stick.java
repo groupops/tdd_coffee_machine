@@ -2,7 +2,6 @@ package com.epam.tdd_coffee_machine;
 
 public enum Stick implements Ingredient {
 
-  NONE(""),
   ONE("0");
 
   private final String symbol;

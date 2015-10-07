@@ -15,35 +15,71 @@ public class CoffeeMachineTest {
 
   @Test
   public void shouldCreateCoffeeOrderTest() {
+    Order order = client.createOrder(Beverage.COFFEE);
 
-    String order = client.createOrder(Beverage.COFFEE, Sugar.NONE);
-
-    Assert.assertEquals("C::", order);
+    Assert.assertEquals("C::", order.getCommand());
   }
 
   @Test
   public void shouldCreateTeaOrderTest() {
-    CoffeeMachineClient client = new CoffeeMachineClient();
-    String order = client.createOrder(Beverage.TEA, Sugar.NONE);
+    Order order = client.createOrder(Beverage.TEA);
 
-    Assert.assertEquals("T::", order);
+    Assert.assertEquals("T::", order.getCommand());
   }
 
   @Test
   public void shouldCreateChocolateOrderTest() {
-    CoffeeMachineClient client = new CoffeeMachineClient();
-    String order =
-        client.createOrder(Beverage.CHOCOLATE, Sugar.NONE);
+    Order order = client.createOrder(Beverage.CHOCOLATE);
 
-    Assert.assertEquals("H::", order);
+    Assert.assertEquals("H::", order.getCommand());
   }
 
   @Test
-  public void shouldCreateCoffeeWithOneSugarOrderTest() {
-    CoffeeMachineClient client = new CoffeeMachineClient();
-    String order = client.createOrder(Beverage.COFFEE, Sugar.ONE);
+  public void shouldAddOneSugarToCoffeeOrderTest() {
+    Order order = client.createOrder(Beverage.COFFEE);
+    order.addSugar(Sugar.ONE);
 
-    Assert.assertEquals("C:1:0", order);
+    Assert.assertEquals("C:1:0", order.getCommand());
+  }
+
+  @Test
+  public void shouldAddOneSugarToTeaOrderTest() {
+    Order order = client.createOrder(Beverage.TEA);
+    order.addSugar(Sugar.ONE);
+
+    Assert.assertEquals("T:1:0", order.getCommand());
+  }
+
+  @Test
+  public void shouldAddOneSugarToChocolateOrderTest() {
+    Order order = client.createOrder(Beverage.CHOCOLATE);
+    order.addSugar(Sugar.ONE);
+
+    Assert.assertEquals("H:1:0", order.getCommand());
+  }
+
+  @Test
+  public void shouldAddTwoSugarsToCoffeeOrderTest() {
+    Order order = client.createOrder(Beverage.COFFEE);
+    order.addSugar(Sugar.TWO);
+
+    Assert.assertEquals("C:2:0", order.getCommand());
+  }
+
+  @Test
+  public void shouldAddTwoSugarsToTeaOrderTest() {
+    Order order = client.createOrder(Beverage.TEA);
+    order.addSugar(Sugar.TWO);
+
+    Assert.assertEquals("T:2:0", order.getCommand());
+  }
+
+  @Test
+  public void shouldAddTwoSugarsToChocolateOrderTest() {
+    Order order = client.createOrder(Beverage.CHOCOLATE);
+    order.addSugar(Sugar.TWO);
+
+    Assert.assertEquals("H:2:0", order.getCommand());
   }
 
 }
