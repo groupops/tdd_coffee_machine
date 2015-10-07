@@ -7,28 +7,28 @@ import org.junit.Test;
  */
 public class CoffeeMakerTest {
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalCoffeeMakerCommandException.class)
     public void exceptionIfDrinkSpecifiedWrong() {
         CoffeeMaker maker = new CoffeeMaker();
 
         maker.make("JSSSA");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalCoffeeMakerCommandException.class)
     public void exceptionWhenSugarIsMoreThen2() {
         CoffeeMaker maker = new CoffeeMaker();
 
         maker.make("T:3:0");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalCoffeeMakerCommandException.class)
     public void exceptionWhenStickIfMoreThen1(){
         CoffeeMaker maker = new CoffeeMaker();
 
         maker.make("C:2:2");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalCoffeeMakerCommandException.class)
     public void stickMustBeSpecifiedWhenSugarPresent(){
         CoffeeMaker maker = new CoffeeMaker();
 
