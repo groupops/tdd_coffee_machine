@@ -1,8 +1,9 @@
 package com.epam.tdd_coffee_machine;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class CoffeeMachineTest {
 
@@ -17,21 +18,21 @@ public class CoffeeMachineTest {
   public void shouldCreateCoffeeOrderTest() {
     Order order = client.createOrder(Beverage.COFFEE);
 
-    Assert.assertEquals("C::", order.getCommand());
+    assertEquals("C::", order.getCommand());
   }
 
   @Test
   public void shouldCreateTeaOrderTest() {
     Order order = client.createOrder(Beverage.TEA);
 
-    Assert.assertEquals("T::", order.getCommand());
+    assertEquals("T::", order.getCommand());
   }
 
   @Test
   public void shouldCreateChocolateOrderTest() {
     Order order = client.createOrder(Beverage.CHOCOLATE);
 
-    Assert.assertEquals("H::", order.getCommand());
+    assertEquals("H::", order.getCommand());
   }
 
   @Test
@@ -39,7 +40,7 @@ public class CoffeeMachineTest {
     Order order = client.createOrder(Beverage.COFFEE);
     order.addSugar(Sugar.ONE);
 
-    Assert.assertEquals("C:1:0", order.getCommand());
+    assertEquals("C:1:0", order.getCommand());
   }
 
   @Test
@@ -47,7 +48,7 @@ public class CoffeeMachineTest {
     Order order = client.createOrder(Beverage.TEA);
     order.addSugar(Sugar.ONE);
 
-    Assert.assertEquals("T:1:0", order.getCommand());
+    assertEquals("T:1:0", order.getCommand());
   }
 
   @Test
@@ -55,7 +56,7 @@ public class CoffeeMachineTest {
     Order order = client.createOrder(Beverage.CHOCOLATE);
     order.addSugar(Sugar.ONE);
 
-    Assert.assertEquals("H:1:0", order.getCommand());
+    assertEquals("H:1:0", order.getCommand());
   }
 
   @Test
@@ -63,7 +64,7 @@ public class CoffeeMachineTest {
     Order order = client.createOrder(Beverage.COFFEE);
     order.addSugar(Sugar.TWO);
 
-    Assert.assertEquals("C:2:0", order.getCommand());
+    assertEquals("C:2:0", order.getCommand());
   }
 
   @Test
@@ -71,7 +72,7 @@ public class CoffeeMachineTest {
     Order order = client.createOrder(Beverage.TEA);
     order.addSugar(Sugar.TWO);
 
-    Assert.assertEquals("T:2:0", order.getCommand());
+    assertEquals("T:2:0", order.getCommand());
   }
 
   @Test
@@ -79,7 +80,16 @@ public class CoffeeMachineTest {
     Order order = client.createOrder(Beverage.CHOCOLATE);
     order.addSugar(Sugar.TWO);
 
-    Assert.assertEquals("H:2:0", order.getCommand());
+    assertEquals("H:2:0", order.getCommand());
+  }
+
+  @Test
+  public void shouldForwardMessageReceivedByCoffeeMachine(){
+    String sampleMessageContent = "message-content";
+    Message message = new Message(sampleMessageContent);
+    String messageContent = client.getMessage(message);
+
+    assertEquals("M:message-content", messageContent);
   }
 
 }

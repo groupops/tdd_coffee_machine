@@ -9,4 +9,8 @@ public class CoffeeMachineClient {
     return order;
   }
 
+  public String getMessage(Message message){
+    return message.getContent();
+  }
+
 }
