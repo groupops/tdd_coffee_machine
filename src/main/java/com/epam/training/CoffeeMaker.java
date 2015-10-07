@@ -6,8 +6,16 @@ package com.epam.training;
 public class CoffeeMaker {
     public void make(String command) {
         String typeOfCommand = command.substring(0, 1);
-        if (!"THCM".contains(typeOfCommand)) {
+        if (!isDrink(typeOfCommand) || !isMessage(typeOfCommand)) {
             throw new IllegalArgumentException("Unknow command!");
         }
+    }
+
+    private boolean isDrink(String command) {
+        return "THC".contains(command) && command.length() == 1;
+    }
+
+    private boolean isMessage(String command) {
+        return command.equals("M");
     }
 }
