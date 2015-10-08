@@ -6,7 +6,11 @@ public class Order {
 
   private String command;
   private BigDecimal money;
-  private CoffeeMachineClient client;
+  private DrinkMaker drinkMaker;
+
+  public Order(DrinkMaker drinkMaker) {
+    this.drinkMaker = drinkMaker;
+  }
 
   private void setCommand(String command) {
     this.command = command;
@@ -30,10 +34,9 @@ public class Order {
     } else {
       Message message =
           new Message("You have given not enough money for this drink");
-      client.sendMessage(message);
+      drinkMaker.forwardMessage(message);
       isEnoughMoney = false;
     }
-
     return isEnoughMoney;
   }
 
@@ -42,14 +45,17 @@ public class Order {
   }
 
   public void addBeverage(Beverage beverage) {
-    String beverageSymbol = beverage.getSymbol();
+    if (isEnoughMoneyFor(beverage)) {
 
-    String command = new StringBuilder()
-        .append(beverageSymbol)
-        .append(":")
-        .append(":")
-        .toString();
-    this.setCommand(command);
+      String beverageSymbol = beverage.getSymbol();
+
+      String command = new StringBuilder()
+          .append(beverageSymbol)
+          .append(":")
+          .append(":")
+          .toString();
+      this.setCommand(command);
+    }
   }
 
   public void addSugar(Sugar sugar) {

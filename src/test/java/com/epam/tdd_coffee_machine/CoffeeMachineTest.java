@@ -13,10 +13,14 @@ import static org.junit.Assert.assertThat;
 public class CoffeeMachineTest {
 
   CoffeeMachineClient client;
+  DrinkMaker drinkMaker;
+  Screen screen;
 
   @Before
   public void setUp(){
-    client = new CoffeeMachineClient();
+    screen = new Screen();
+    drinkMaker = new DrinkMaker(screen);
+    client = new CoffeeMachineClient(drinkMaker);
   }
 
   @Test
@@ -91,10 +95,9 @@ public class CoffeeMachineTest {
   @Test
   public void shouldForwardMessageReceivedByCoffeeMachine(){
     String sampleMessageContent = "message-content";
-    Message message = new Message(sampleMessageContent);
-    String messageContent = client.getMessage();
+    String messageContent = screen.getMessage().getContent();
 
-    assertEquals("M:message-content", messageContent);
+    assertEquals(sampleMessageContent, messageContent);
   }
 
   @Test
@@ -120,9 +123,9 @@ public class CoffeeMachineTest {
 
   @Test
   public void shouldNotCreateCoffeeOrderWithNotEnoughMoneyTest(){
-    Order order = client.createOrder(Beverage.COFFEE);
     BigDecimal money = new BigDecimal("0.5");
     BigDecimal moneyFromClient = client.giveMoney(money);
+    Order order = client.createOrder(Beverage.COFFEE);
     order.setMoney(moneyFromClient);
 
     assertThat(order.isEnoughMoneyFor(Beverage.COFFEE), is(equalTo(false)));
@@ -135,7 +138,7 @@ public class CoffeeMachineTest {
     BigDecimal money = new BigDecimal("0.5");
     BigDecimal moneyFromClient = client.giveMoney(money);
     order.setMoney(moneyFromClient);
-    String messageContent = client.getMessage();
+    String messageContent = screen.getMessage().getContent();
 
     assertEquals(expectedMessage, messageContent);
   }
