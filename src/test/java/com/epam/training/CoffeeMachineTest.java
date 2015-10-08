@@ -95,13 +95,6 @@ public class CoffeeMachineTest {
     }
 
 
-
-
-
-
-
-
-
     private void makeTea(int count) {
         for (int i = 0; i < count; i++) {
             maker.make("T:1:0", 0.6);
