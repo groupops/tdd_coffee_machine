@@ -1,17 +1,22 @@
 package com.epam.translator;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import com.epam.model.Drink;
 import com.epam.model.Order;
+import com.epam.model.Sale;
+import com.epam.report.Report;
 
 public class OrderTranslator {
 	
 	private Order order;
 	private String instruction;
+	private Report report;
 	
-	public OrderTranslator(Order order) {
+	public OrderTranslator(Order order, Report report) {
 		this.order = order;
+		this.report = report;
 	}
 	
 	public void setupDrinkInstruction(BigDecimal moneyAmount) {
@@ -23,15 +28,20 @@ public class OrderTranslator {
 			switch (order.getType()) {
 			case TEA: 
 				instruction.append("T");
+				report.addSale(new Sale(Drink.TEA, new Date()));
 				break;
 			case COFFEE: 
 				instruction.append("C");
+				report.addSale(new Sale(Drink.COFFEE, new Date()));
 				break;
 			case CHOCOLATE: 
 				instruction.append("H");
+				report.addSale(new Sale(Drink.CHOCOLATE, new Date()));
 				break;
 			case JUICE:
 				instruction.append("O");
+				report.addSale(new Sale(Drink.JUICE, new Date()));
+				break;
 			}
 			
 			instruction.append(order.isExtraHot() ? "h" : "");
