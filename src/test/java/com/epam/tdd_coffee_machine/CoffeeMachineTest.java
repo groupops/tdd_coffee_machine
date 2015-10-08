@@ -93,54 +93,57 @@ public class CoffeeMachineTest {
   }
 
   @Test
-  public void shouldForwardMessageReceivedByCoffeeMachine(){
-    String sampleMessageContent = "message-content";
-    String messageContent = screen.getMessage().getContent();
+  public void shouldForwardMessageReceivedByCoffeeMachine() {
+    String expectedMessage = "M:message-content";
+    String testedMessageContent = "message-content";
+    Message message = new Message(testedMessageContent);
+    client.setMessage(message);
+    String testedMessage = screen.getMessage();
 
-    assertEquals(sampleMessageContent, messageContent);
+    assertThat(testedMessage, is(equalTo(expectedMessage)));
   }
 
   @Test
-  public void shouldCreateCoffeeOrderWithEnoughMoneyTest(){
+  public void shouldCreateCoffeeOrderWithEnoughMoneyTest() {
     Order order = client.createOrder(Beverage.COFFEE);
     BigDecimal coffeeCost = new BigDecimal("0.6");
     BigDecimal money = new BigDecimal("0.6");
-    BigDecimal moneyFromClient = client.giveMoney(money);
-    order.setMoney(moneyFromClient);
+    client.giveMoney(money);
 
-    assertEquals(coffeeCost, order.getMoney());
+    assertThat(order.getMoney(), is(equalTo(coffeeCost)));
   }
 
   @Test
-  public void shouldCreateCoffeeOrderWithTooMuchMoneyTest(){
+  public void shouldCreateCoffeeOrderWithTooMuchMoneyTest() {
     Order order = client.createOrder(Beverage.COFFEE);
     BigDecimal money = new BigDecimal("0.7");
-    BigDecimal moneyFromClient = client.giveMoney(money);
-    order.setMoney(moneyFromClient);
+    client.giveMoney(money);
 
-    assertThat(order.isEnoughMoneyFor(Beverage.COFFEE), is(equalTo(true)));
+    assertThat(drinkMaker.isEnoughMoneyFor(Beverage.COFFEE, money),
+        is(equalTo(true)));
   }
 
   @Test
-  public void shouldNotCreateCoffeeOrderWithNotEnoughMoneyTest(){
-    BigDecimal money = new BigDecimal("0.5");
-    BigDecimal moneyFromClient = client.giveMoney(money);
+  public void shouldNotCreateCoffeeOrderWithNotEnoughMoneyTest() {
     Order order = client.createOrder(Beverage.COFFEE);
-    order.setMoney(moneyFromClient);
+    BigDecimal money = new BigDecimal("0.5");
+    client.giveMoney(money);
 
-    assertThat(order.isEnoughMoneyFor(Beverage.COFFEE), is(equalTo(false)));
+    assertThat(drinkMaker.isEnoughMoneyFor(Beverage.COFFEE, money),
+        is(equalTo(false)));
   }
 
   @Test
-  public void shouldSendMessageWhenNotEnoughMoneyTest(){
-    String expectedMessage = "You have given not enough money for this drink";
+  public void shouldSendMessageWhenNotEnoughMoneyTest() {
+    String expectedMessage =
+        "M:You have given not enough money for this drink. 0.10 euro is missing.";
     Order order = client.createOrder(Beverage.COFFEE);
     BigDecimal money = new BigDecimal("0.5");
-    BigDecimal moneyFromClient = client.giveMoney(money);
-    order.setMoney(moneyFromClient);
-    String messageContent = screen.getMessage().getContent();
+    client.giveMoney(money);
+    drinkMaker.isEnoughMoneyFor(Beverage.COFFEE, money);
+    String testedMessage = screen.getMessage();
 
-    assertEquals(expectedMessage, messageContent);
+    assertEquals(expectedMessage, testedMessage);
   }
 
 }

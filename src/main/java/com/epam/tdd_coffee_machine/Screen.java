@@ -4,8 +4,8 @@ public class Screen {
 
   private Message message;
 
-  public Message getMessage() {
-    return message;
+  public String getMessage() {
+    return message.getContent();
   }
 
   public void setMessage(Message message) {

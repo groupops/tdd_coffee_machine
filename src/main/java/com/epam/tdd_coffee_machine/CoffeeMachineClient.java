@@ -5,23 +5,24 @@ import java.math.BigDecimal;
 public class CoffeeMachineClient {
 
   private DrinkMaker drinkMaker;
+  private Order order;
 
   public CoffeeMachineClient(DrinkMaker drinkMaker) {
     this.drinkMaker = drinkMaker;
   }
 
   public Order createOrder(Beverage beverage) {
-    Order order = new Order(drinkMaker);
+    order = new Order(drinkMaker);
     order.addBeverage(beverage);
     return order;
   }
 
-  public void sendMessage(Message message){
-    drinkMaker.forwardMessage(message);
+  public void setMessage(Message message){
+    drinkMaker.sendMessage(message);
   }
 
-  public BigDecimal giveMoney(BigDecimal money){
-    return money;
+  public void giveMoney(BigDecimal money){
+    order.setMoney(money);
   }
 
 }

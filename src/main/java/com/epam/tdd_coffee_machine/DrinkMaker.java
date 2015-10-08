@@ -1,5 +1,7 @@
 package com.epam.tdd_coffee_machine;
 
+import java.math.BigDecimal;
+
 public class DrinkMaker {
 
   private Screen screen;
@@ -8,8 +10,29 @@ public class DrinkMaker {
     this.screen = screen;
   }
 
-  public void forwardMessage(Message message){
+  public void sendMessage(Message message){
     screen.setMessage(message);
+  }
+
+  public boolean isEnoughMoneyFor(Beverage beverage, BigDecimal clientMoney) {
+    boolean isEnoughMoney;
+    BigDecimal priceOfBeverage = beverage.getPrice();
+    int comparison = clientMoney.compareTo(priceOfBeverage);
+
+    if (comparison >= 0) {
+      isEnoughMoney = true;
+    } else {
+      isEnoughMoney = false;
+      BigDecimal missingValue = priceOfBeverage.subtract(clientMoney);
+      BigDecimal missingValueFormatted =
+          missingValue.setScale(2, BigDecimal.ROUND_HALF_UP);
+      Message message =
+          new Message(
+              "You have given not enough money for this drink. " +
+                  missingValueFormatted + " euro is missing.");
+      sendMessage(message);
+    }
+    return isEnoughMoney;
   }
 
 }

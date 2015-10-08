@@ -24,29 +24,11 @@ public class Order {
     return money;
   }
 
-  public boolean isEnoughMoneyFor(Beverage beverage) {
-    boolean isEnoughMoney;
-    BigDecimal moneyFromClient = getMoney();
-    int result = moneyFromClient.compareTo(beverage.getPrice());
-
-    if (result >= 0) {
-      isEnoughMoney = true;
-    } else {
-      Message message =
-          new Message("You have given not enough money for this drink");
-      drinkMaker.forwardMessage(message);
-      isEnoughMoney = false;
-    }
-    return isEnoughMoney;
-  }
-
   public void setMoney(BigDecimal money) {
     this.money = money;
   }
 
   public void addBeverage(Beverage beverage) {
-    if (isEnoughMoneyFor(beverage)) {
-
       String beverageSymbol = beverage.getSymbol();
 
       String command = new StringBuilder()
@@ -55,7 +37,6 @@ public class Order {
           .append(":")
           .toString();
       this.setCommand(command);
-    }
   }
 
   public void addSugar(Sugar sugar) {
