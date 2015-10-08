@@ -38,6 +38,23 @@ public class CoffeeMachineTest {
     public void whenGivenNotEnoughMoneyForChocolate(){
         maker.make("H:1:0", 0.4);
     }
+
+    @Test
+    public void shouldBeAbleToOrderOrangeJuice(){
+        maker.make("O::", 1D);
+    }
+
+    @Test
+    public void shouldBeAbleToOrderExtraHotDrink(){
+        maker.make("Ch:1:0", 1D);
+        maker.make("Hh:1:0", 1D);
+        maker.make("Th:1:0", 1D);
+    }
+
+    @Test(expected = IllegalCoffeeMakerCommandException.class)
+    public void whenOrderingOrangeWithSugar(){
+        maker.make("O:1:)", 1D);
+    }
 }
 
 

@@ -6,7 +6,8 @@ package com.epam.training;
 public enum Drink {
     COFFEE(0.4),
     CHOCOLATE(0.5),
-    TEA(0.6);
+    TEA(0.6),
+    ORANGE_JUICE(0.6);
 
     private double price;
 

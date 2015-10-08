@@ -11,8 +11,8 @@ import static com.epam.training.Drink.TEA;
  * Created by Dmytro_Ulanovych on 10/7/2015.
  */
 public class CoffeeMachine {
-    private static final Pattern COMMAND_PATTERN = Pattern.compile("(^[THC]:[1-2]?:[0]?)|([M]:.+)");
-    private static final Pattern DRINK_PATTERN = Pattern.compile("^[THC]:[1-2]?:[0]?");
+    private static final Pattern COMMAND_PATTERN = Pattern.compile("(^[THC][h]?:[1-2]?:[0]?)|([M]:.+)|(O::)");
+    private static final Pattern DRINK_PATTERN = Pattern.compile("(^[THC][h]?:[1-2]?:[0]?)|(O::)");
 
     public void make(String command, Double money) {
         checkIfCommandValid(command);
