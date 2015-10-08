@@ -10,6 +10,7 @@ import com.epam.report.Report;
 
 public class OrderTranslator {
 	
+	private static final int NO_SUGAR = 0;
 	private Order order;
 	private String instruction;
 	private Report report;
@@ -22,11 +23,12 @@ public class OrderTranslator {
 	public void setupDrinkInstruction(BigDecimal moneyAmount) {
 		StringBuilder instruction = new StringBuilder();
 		
+		//TODO: check water and milk
 		if (checkMoneyAmount(moneyAmount)) {
 			setStick();
 			
 			switch (order.getType()) {
-			case TEA: 
+			case TEA:
 				instruction.append("T");
 				report.addSale(new Sale(Drink.TEA, new Date()));
 				break;
@@ -81,6 +83,6 @@ public class OrderTranslator {
 	}
 	
 	private void setStick() {
-		order.setStick(order.getSugarQuantity() > 0);
+		order.setStick(order.getSugarQuantity() > NO_SUGAR);
 	}
 }

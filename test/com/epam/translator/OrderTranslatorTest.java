@@ -11,7 +11,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.epam.helpers.DateHelper;
 import com.epam.model.Drink;
 import com.epam.model.Order;
 import com.epam.model.Sale;
@@ -22,12 +21,16 @@ public class OrderTranslatorTest {
 	private static final BigDecimal NOT_ENOUGH_MONEY_AMOUNT = new BigDecimal("0.1");
 	private static final BigDecimal ENOUGH_MONEY_AMOUNT = new BigDecimal("10");
 	private static final BigDecimal EXPECTED_DAILY_INCOME = new BigDecimal("1.0");
+	private static final int NO_SUGAR = 0;
+	private static final int LESS_SUGAR = 1;
+	private static final int MORE_SUGAR = 2;
 	private static final boolean WITH_STICK = true;
 	private static final boolean WITHOUT_STICK = false;
 	private static final boolean EXTRA_HOT = true;
 	private static final boolean NOT_EXTRA_HOT = false;
 
 	private Report report;
+	private OrderTranslator orderTranslator;
 	
 	@Before
 	public void before() {
@@ -41,45 +44,46 @@ public class OrderTranslatorTest {
 	
 	@Test
 	public void drinkMakerReceivesTForTea() {
-		OrderTranslator orderSender = new OrderTranslator(new Order(Drink.TEA, 1, WITHOUT_STICK, NOT_EXTRA_HOT), report);
-		orderSender.setupDrinkInstruction(ENOUGH_MONEY_AMOUNT);
-		String instruction = orderSender.getInstruction();
+		orderTranslator = new OrderTranslator(new Order(Drink.TEA, LESS_SUGAR, WITHOUT_STICK, NOT_EXTRA_HOT), report);
+		orderTranslator.setupDrinkInstruction(ENOUGH_MONEY_AMOUNT);
+		String instruction = orderTranslator.getInstruction();
 		
+		//TODO: set constants for ready made drink and assert the whole command and don't use substring
 		assertEquals("T", instruction.substring(0, 1));
 	}
 	
 	@Test
 	public void drinkMakerReceivesCForCoffee() {
-		OrderTranslator orderSender = new OrderTranslator(new Order(Drink.COFFEE, 1, WITHOUT_STICK, NOT_EXTRA_HOT), report);
-		orderSender.setupDrinkInstruction(ENOUGH_MONEY_AMOUNT);
-		String instruction = orderSender.getInstruction();
+		orderTranslator = new OrderTranslator(new Order(Drink.COFFEE, LESS_SUGAR, WITHOUT_STICK, NOT_EXTRA_HOT), report);
+		orderTranslator.setupDrinkInstruction(ENOUGH_MONEY_AMOUNT);
+		String instruction = orderTranslator.getInstruction();
 		
 		assertEquals("C", instruction.substring(0, 1));
 	}
 	
 	@Test
 	public void drinkMakerReceivesHForChocolate() {
-		OrderTranslator orderSender = new OrderTranslator(new Order(Drink.CHOCOLATE, 1, WITHOUT_STICK, NOT_EXTRA_HOT), report);
-		orderSender.setupDrinkInstruction(ENOUGH_MONEY_AMOUNT);
-		String instruction = orderSender.getInstruction();
+		orderTranslator = new OrderTranslator(new Order(Drink.CHOCOLATE, LESS_SUGAR, WITHOUT_STICK, NOT_EXTRA_HOT), report);
+		orderTranslator.setupDrinkInstruction(ENOUGH_MONEY_AMOUNT);
+		String instruction = orderTranslator.getInstruction();
 		
 		assertEquals("H", instruction.substring(0, 1));
 	}
 	
 	@Test
 	public void drinkMakerReceivesCorrectSugarQuantity() {
-		OrderTranslator orderSender = new OrderTranslator(new Order(Drink.TEA, 2, WITH_STICK, NOT_EXTRA_HOT), report);
-		orderSender.setupDrinkInstruction(ENOUGH_MONEY_AMOUNT);
-		String instruction = orderSender.getInstruction();
+		orderTranslator = new OrderTranslator(new Order(Drink.TEA, MORE_SUGAR, WITH_STICK, NOT_EXTRA_HOT), report);
+		orderTranslator.setupDrinkInstruction(ENOUGH_MONEY_AMOUNT);
+		String instruction = orderTranslator.getInstruction();
 		
 		assertEquals("2", instruction.substring(2, 3));
 	}
 	
 	@Test
 	public void drinkMakerReceivesStickWhenThereIsSugar() {
-		OrderTranslator orderSender = new OrderTranslator(new Order(Drink.TEA, 2, WITHOUT_STICK, NOT_EXTRA_HOT), report);
-		orderSender.setupDrinkInstruction(ENOUGH_MONEY_AMOUNT);
-		String instruction = orderSender.getInstruction();
+		orderTranslator = new OrderTranslator(new Order(Drink.TEA, MORE_SUGAR, WITHOUT_STICK, NOT_EXTRA_HOT), report);
+		orderTranslator.setupDrinkInstruction(ENOUGH_MONEY_AMOUNT);
+		String instruction = orderTranslator.getInstruction();
 		
 		assertEquals("0", instruction.substring(4, 5));
 	}
@@ -87,8 +91,8 @@ public class OrderTranslatorTest {
 	@Test
 	public void drinkMakerReceivesAdjustingForSugar() {
 		Order order = new Order(Drink.TEA, 2, WITHOUT_STICK, NOT_EXTRA_HOT);
-		OrderTranslator orderSender = new OrderTranslator(order, report);
-		orderSender.edjustSugarAmount(1);
+		orderTranslator = new OrderTranslator(order, report);
+		orderTranslator.edjustSugarAmount(1);
 		
 		assertEquals(1, order.getSugarQuantity());
 	}
@@ -97,18 +101,18 @@ public class OrderTranslatorTest {
 	
 	@Test
 	public void drinkMakerDoesNotMakeTeaIfNotEnoughMoney() {
-		OrderTranslator orderSender = new OrderTranslator(new Order(Drink.TEA, 1, WITHOUT_STICK, NOT_EXTRA_HOT), report);
-		orderSender.setupDrinkInstruction(NOT_ENOUGH_MONEY_AMOUNT);
-		String instruction = orderSender.getInstruction();
+		orderTranslator = new OrderTranslator(new Order(Drink.TEA, LESS_SUGAR, WITHOUT_STICK, NOT_EXTRA_HOT), report);
+		orderTranslator.setupDrinkInstruction(NOT_ENOUGH_MONEY_AMOUNT);
+		String instruction = orderTranslator.getInstruction();
 		
 		assertEquals("M:Not enough money! Please add " + Drink.TEA.getEmount().subtract(NOT_ENOUGH_MONEY_AMOUNT) + " euro", instruction);
 	}
 	
 	@Test
 	public void drinkMakerReceivesThForExtraHotTea() {
-		OrderTranslator orderSender = new OrderTranslator(new Order(Drink.TEA, 1, WITHOUT_STICK, EXTRA_HOT), report);
-		orderSender.setupDrinkInstruction(ENOUGH_MONEY_AMOUNT);
-		String instruction = orderSender.getInstruction();
+		orderTranslator = new OrderTranslator(new Order(Drink.TEA, LESS_SUGAR, WITHOUT_STICK, EXTRA_HOT), report);
+		orderTranslator.setupDrinkInstruction(ENOUGH_MONEY_AMOUNT);
+		String instruction = orderTranslator.getInstruction();
 		
 		assertEquals("Th", instruction.substring(0, 2));
 	}
@@ -117,27 +121,27 @@ public class OrderTranslatorTest {
 	
 	@Test
 	public void drinkMakerCantMakeExtraHotJuice() {
-		OrderTranslator orderSender = new OrderTranslator(new Order(Drink.JUICE, 0, WITHOUT_STICK, EXTRA_HOT), report);
-		orderSender.setupDrinkInstruction(ENOUGH_MONEY_AMOUNT);
-		String instruction = orderSender.getInstruction();
+		orderTranslator = new OrderTranslator(new Order(Drink.JUICE, NO_SUGAR, WITHOUT_STICK, EXTRA_HOT), report);
+		orderTranslator.setupDrinkInstruction(ENOUGH_MONEY_AMOUNT);
+		String instruction = orderTranslator.getInstruction();
 		
 		assertEquals("O::", instruction);
 	}
 	
 	@Test
 	public void drinkMakerCantMakeJuiceWithSugar() {
-		OrderTranslator orderSender = new OrderTranslator(new Order(Drink.JUICE, 2, WITHOUT_STICK, NOT_EXTRA_HOT), report);
-		orderSender.setupDrinkInstruction(ENOUGH_MONEY_AMOUNT);
-		String instruction = orderSender.getInstruction();
+		orderTranslator = new OrderTranslator(new Order(Drink.JUICE, MORE_SUGAR, WITHOUT_STICK, NOT_EXTRA_HOT), report);
+		orderTranslator.setupDrinkInstruction(ENOUGH_MONEY_AMOUNT);
+		String instruction = orderTranslator.getInstruction();
 		
 		assertEquals("O::", instruction);
 	}
 	
 	@Test
 	public void drinkMakerDoesNotMakeJuiceIfNotEnoughMoney() {
-		OrderTranslator orderSender = new OrderTranslator(new Order(Drink.JUICE, 0, WITHOUT_STICK, NOT_EXTRA_HOT), report);
-		orderSender.setupDrinkInstruction(NOT_ENOUGH_MONEY_AMOUNT);
-		String instruction = orderSender.getInstruction();
+		orderTranslator = new OrderTranslator(new Order(Drink.JUICE, NO_SUGAR, WITHOUT_STICK, NOT_EXTRA_HOT), report);
+		orderTranslator.setupDrinkInstruction(NOT_ENOUGH_MONEY_AMOUNT);
+		String instruction = orderTranslator.getInstruction();
 		
 		assertEquals("M:Not enough money! Please add " + Drink.JUICE.getEmount().subtract(NOT_ENOUGH_MONEY_AMOUNT) + " euro", instruction);
 	}
@@ -145,12 +149,12 @@ public class OrderTranslatorTest {
 	@Test
 	public void drinkMakerGeneratesDailyReport() {
 		List<Order> orders = new ArrayList<Order>();
-		orders.add(new Order(Drink.JUICE, 0, WITHOUT_STICK, NOT_EXTRA_HOT));
-		orders.add(new Order(Drink.TEA, 0, WITHOUT_STICK, NOT_EXTRA_HOT));
+		orders.add(new Order(Drink.JUICE, NO_SUGAR, WITHOUT_STICK, NOT_EXTRA_HOT));
+		orders.add(new Order(Drink.TEA, NO_SUGAR, WITHOUT_STICK, NOT_EXTRA_HOT));
 		
 		for (Order order : orders) {
-			OrderTranslator orderSender = new OrderTranslator(order, report);
-			orderSender.setupDrinkInstruction(ENOUGH_MONEY_AMOUNT);
+			orderTranslator = new OrderTranslator(order, report);
+			orderTranslator.setupDrinkInstruction(ENOUGH_MONEY_AMOUNT);
 		}
 		
 		List<Sale> sales = report.getDailyReport(new Date());
@@ -168,12 +172,12 @@ public class OrderTranslatorTest {
 	@Test
 	public void drinkMakerCalculatesDailyIncome() {
 		List<Order> orders = new ArrayList<Order>();
-		orders.add(new Order(Drink.JUICE, 0, WITHOUT_STICK, NOT_EXTRA_HOT));
-		orders.add(new Order(Drink.TEA, 0, WITHOUT_STICK, NOT_EXTRA_HOT));
+		orders.add(new Order(Drink.JUICE, NO_SUGAR, WITHOUT_STICK, NOT_EXTRA_HOT));
+		orders.add(new Order(Drink.TEA, NO_SUGAR, WITHOUT_STICK, NOT_EXTRA_HOT));
 		
 		for (Order order : orders) {
-			OrderTranslator orderSender = new OrderTranslator(order, report);
-			orderSender.setupDrinkInstruction(ENOUGH_MONEY_AMOUNT);
+			orderTranslator = new OrderTranslator(order, report);
+			orderTranslator.setupDrinkInstruction(ENOUGH_MONEY_AMOUNT);
 		}
 		
 		BigDecimal dailyIncome = report.getDailyIncome(new Date());
