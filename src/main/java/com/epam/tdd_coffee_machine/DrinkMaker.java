@@ -23,16 +23,21 @@ public class DrinkMaker {
       isEnoughMoney = true;
     } else {
       isEnoughMoney = false;
-      BigDecimal missingValue = priceOfBeverage.subtract(clientMoney);
-      BigDecimal missingValueFormatted =
-          missingValue.setScale(2, BigDecimal.ROUND_HALF_UP);
-      Message message =
-          new Message(
-              "You have given not enough money for this drink. " +
-                  missingValueFormatted + " euro is missing.");
-      sendMessage(message);
+      notifyAboutNotEnoughMoney(clientMoney, priceOfBeverage);
     }
     return isEnoughMoney;
+  }
+
+  private void notifyAboutNotEnoughMoney(BigDecimal clientMoney,
+                                         BigDecimal priceOfBeverage) {
+    BigDecimal missingValue = priceOfBeverage.subtract(clientMoney);
+    BigDecimal missingValueFormatted =
+        missingValue.setScale(2, BigDecimal.ROUND_HALF_UP);
+    Message message =
+        new Message(
+            "You have given not enough money for this drink. " +
+                missingValueFormatted + " euro is missing.");
+    sendMessage(message);
   }
 
 }

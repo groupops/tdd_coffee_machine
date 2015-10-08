@@ -146,4 +146,18 @@ public class CoffeeMachineTest {
     assertEquals(expectedMessage, testedMessage);
   }
 
+  @Test
+  public void shouldCreateOrangeJuiceOrderTest() {
+    Order order = client.createOrder(Beverage.ORANGE_JUICE);
+
+    assertEquals("O::", order.getCommand());
+  }
+
+  @Test
+  public void shouldCreateCoffeeExtraHotOrderTest() {
+    Order order = client.createOrder(Beverage.COFFEE, true);
+
+    assertEquals("Ch::", order.getCommand());
+  }
+
 }

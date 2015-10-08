@@ -28,15 +28,19 @@ public class Order {
     this.money = money;
   }
 
-  public void addBeverage(Beverage beverage) {
-      String beverageSymbol = beverage.getSymbol();
+  public void addBeverage(Beverage beverage, boolean isExtraHot) {
+    String beverageSymbol = beverage.getSymbol();
 
-      String command = new StringBuilder()
-          .append(beverageSymbol)
-          .append(":")
-          .append(":")
-          .toString();
-      this.setCommand(command);
+    String extraHotSymbol =
+        beverage.canBeExtraHot() ? addExtraHot(isExtraHot) : "";
+
+    String command = new StringBuilder()
+        .append(beverageSymbol)
+        .append(extraHotSymbol)
+        .append(":")
+        .append(":")
+        .toString();
+    this.setCommand(command);
   }
 
   public void addSugar(Sugar sugar) {
@@ -46,6 +50,10 @@ public class Order {
         .append(":")
         .append(Stick.ONE.getSymbol())
         .toString();
+  }
+
+  public String addExtraHot(boolean isExtraHot) {
+    return isExtraHot ? "h" : "";
   }
 
 }
