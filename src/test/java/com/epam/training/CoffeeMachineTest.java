@@ -16,22 +16,22 @@ public class CoffeeMachineTest {
 
     @Test(expected = IllegalCoffeeMakerCommandException.class)
     public void exceptionIfDrinkSpecifiedWrong() {
-        maker.make("JSSSA", 0D);
+        maker.make("JSSSA", 10D);
     }
 
     @Test(expected = IllegalCoffeeMakerCommandException.class)
     public void whenAskingMoreThenTwoSugar() {
-        maker.make("T:3:0", 0D);
+        maker.make("T:3:0", 10D);
     }
 
     @Test(expected = IllegalCoffeeMakerCommandException.class)
     public void whenInvalidSticksCommand() {
-        maker.make("C:2:2", 0D);
+        maker.make("C:2:2", 10D);
     }
 
     @Test(expected = IllegalCoffeeMakerCommandException.class)
     public void stickMustBeSpecifiedWhenSugarPresent() {
-        maker.make("C:2:", 0D);
+        maker.make("C:2:", 10D);
     }
 
     @Test(expected = NotEnoughMoneyException.class)
