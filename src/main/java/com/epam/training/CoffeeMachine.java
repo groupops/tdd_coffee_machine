@@ -1,11 +1,11 @@
 package com.epam.training;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.epam.training.Drink.CHOCOLATE;
-import static com.epam.training.Drink.COFFEE;
-import static com.epam.training.Drink.TEA;
+import static com.epam.training.Drink.*;
 
 /**
  * Created by Dmytro_Ulanovych on 10/7/2015.
@@ -13,6 +13,9 @@ import static com.epam.training.Drink.TEA;
 public class CoffeeMachine {
     private static final Pattern COMMAND_PATTERN = Pattern.compile("(^[THC][h]?:[1-2]?:[0]?)|([M]:.+)|(O::)");
     private static final Pattern DRINK_PATTERN = Pattern.compile("(^[THC][h]?:[1-2]?:[0]?)|(O::)");
+    private double earnedMoney;
+    private final Map<Drink, Integer> soldDrinks = new HashMap<>();
+
 
     public void make(String command, Double money) {
         checkIfCommandValid(command);
@@ -23,6 +26,7 @@ public class CoffeeMachine {
             if (drink.getPrice() > money) {
                 throw new NotEnoughMoneyException(String.format("Provided need to provide %f to make selected drink.", drink.getPrice() - money));
             }
+            sellDrink(drink);
         }
     }
 
@@ -47,6 +51,25 @@ public class CoffeeMachine {
 
     private Drink getDrinkFromCommand(String command) {
         String drinkName = command.substring(0, 1);
-        return drinkName.equals("C") ? COFFEE : (drinkName.equals("H") ? CHOCOLATE : TEA);
+        return drinkName.equals("C") ? COFFEE : (drinkName.equals("H") ? CHOCOLATE : (drinkName.equals("O") ? ORANGE_JUICE : TEA));
+    }
+
+    private void sellDrink(Drink drink) {
+        int alreadySold = 0;
+        if (soldDrinks.containsKey(drink)) {
+            alreadySold = soldDrinks.get(drink);
+        }
+        alreadySold++;
+        soldDrinks.put(drink, alreadySold);
+        earnedMoney += drink.getPrice();
+    }
+
+
+    public double getEarnedMoney() {
+        return earnedMoney;
+    }
+
+    public int getSoldDrinksCount(Drink drink) {
+        return soldDrinks.containsKey(drink) ? soldDrinks.get(drink) : 0;
     }
 }
