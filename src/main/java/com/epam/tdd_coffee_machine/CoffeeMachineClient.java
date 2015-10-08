@@ -4,25 +4,26 @@ import java.math.BigDecimal;
 
 public class CoffeeMachineClient {
 
-  private Message message;
+  private DrinkMaker drinkMaker;
+  private Order order;
+
+  public CoffeeMachineClient(DrinkMaker drinkMaker) {
+    this.drinkMaker = drinkMaker;
+  }
 
   public Order createOrder(Beverage beverage) {
-    Order order = new Order();
+    order = new Order(drinkMaker);
     order.addBeverage(beverage);
 
     return order;
   }
 
-  public Message sendMessage(Message message){
-    return message;
+  public void setMessage(Message message){
+    drinkMaker.sendMessage(message);
   }
 
-  public String getMessage(){
-    return message.getContent();
-  }
-
-  public BigDecimal giveMoney(BigDecimal money){
-    return money;
+  public void giveMoney(BigDecimal money){
+    order.setMoney(money);
   }
 
 }
